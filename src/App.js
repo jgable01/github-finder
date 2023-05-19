@@ -9,8 +9,12 @@ import "@fontsource/roboto/700.css";
 function App() {
   return (
     <div className="App">
-      <Search />
-      <User />
+      <main>
+        <Routes>
+          <Route exact path="/" element={<Search />} />
+          <Route exact path='/user/:username' element={<User />} />
+        </Routes>
+      </main>
     </div>
   );
 }

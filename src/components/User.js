@@ -31,6 +31,62 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function User() {
+  const [user, setUser] = useState([
+    {
+      name: "John Doe",
+      avatar_url: "https://avatars.githubusercontent.com/u/1?v=4",
+      repositories: "",
+      followers: "",
+      following: "",
+      github: "",
+    },
+  ]);
+  const [userRepos, setUserRepos] = useState([]);
+
+  const { username } = useParams();
+
+  console.log(username);
+
+  const userEndpoint = `https://api.github.com/users/${username}`;
+  const repoEndpoint = `https://api.github.com/users/${username}/repos`;
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data } = await axios.get(userEndpoint);
+        setUser({
+          name: data.name,
+          avatar_url: data.avatar_url,
+          followers: data.followers,
+          repositories: data.public_repos,
+          following: data.following,
+          github: data.html_url,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getRepos = async () => {
+      try {
+        const { data } = await axios.get(repoEndpoint);
+        const repositories = data.map((data) => ({
+          name: data.name,
+          update: new Date(data.updated_at).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }),
+        }));
+        setUserRepos(repositories);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+    getRepos();
+  }, []);
+
   return (
     <div>
       <Container>
@@ -41,7 +97,7 @@ function User() {
             alignItems: "center",
           }}
         >
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+          <Avatar alt="Remy Sharp" src={user.avatar_url} />
           <Typography
             variant="h4"
             component="div"
@@ -52,14 +108,38 @@ function User() {
               mb: 2.5,
             }}
           >
-            Name
+            {username}
           </Typography>
-          <Box sx={{}}>
-            <Typography>RepoNum FollowNum FollowingNum</Typography>
-            <Typography>Repositories Followers Following</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              width: "370px",
+            }}
+          >
+            <Typography>{user.repositories}</Typography>
+            <Typography>{user.followers}</Typography>
+            <Typography>{user.following}</Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              mb: 2.5,
+              width: "300px",
+            }}
+          >
+            <Typography>Repositories</Typography>
+            <Typography>Followers</Typography>
+            <Typography>Following</Typography>
           </Box>
           <Button
             variant="contained"
+            href={user.github}
             sx={{
               mt: 2,
               height: "40px",
@@ -92,120 +172,46 @@ function User() {
                 width: "100%",
               }}
             >
-              <Item>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    ml: 2,
-                  }}
-                >
+              {userRepos.map((repo) => (
+                <Item>
                   <Box
                     sx={{
                       display: "flex",
-                      width: "100%",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      ml: 2,
                     }}
                   >
-                    <Typography
+                    <Box
                       sx={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        color: "#068c49",
-                        mb: 1,
+                        display: "flex",
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
                       }}
                     >
-                      RepoName
-                    </Typography>
-                    <Typography
-                      sx={{
-                        mr: 2,
-                      }}
-                    >
-                      Test
-                    </Typography>
+                      <Typography
+                        sx={{
+                          fontSize: "1.2rem",
+                          fontWeight: "600",
+                          color: "#068c49",
+                          mb: 1,
+                        }}
+                      >
+                        {repo.name}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          mr: 2,
+                        }}
+                      >
+                        {repo.update}
+                      </Typography>
+                    </Box>
+                    <Typography>{repo.about}</Typography>
                   </Box>
-                  <Typography>Repo Description</Typography>
-                </Box>
-              </Item>
-              <Item>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    ml: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        color: "#068c49",
-                        mb: 1,
-                      }}
-                    >
-                      RepoName
-                    </Typography>
-                    <Typography
-                      sx={{
-                        mr: 2,
-                      }}
-                    >
-                      Test
-                    </Typography>
-                  </Box>
-                  <Typography>Repo Description</Typography>
-                </Box>
-              </Item>
-              <Item>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    ml: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: "1.2rem",
-                        fontWeight: "600",
-                        color: "#068c49",
-                        mb: 1,
-                      }}
-                    >
-                      RepoName
-                    </Typography>
-                    <Typography
-                      sx={{
-                        mr: 2,
-                      }}
-                    >
-                      Test
-                    </Typography>
-                  </Box>
-                  <Typography>Repo Description</Typography>
-                </Box>
-              </Item>
+                </Item>
+              ))}
             </Stack>
           </Box>
         </Box>
