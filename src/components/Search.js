@@ -96,7 +96,7 @@ function Search() {
                 sx={{
                   ml: 2,
                   height: "40px",
-                  width: "135px",
+                  width: "100px",
                 }}
                 type="submit"
               >
