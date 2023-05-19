@@ -28,7 +28,13 @@ function Search() {
           }>
             Github Finder
           </Typography>
-          <Box>
+          <Box sx={
+            {
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }
+          }>
           <TextField id="outlined-basic" label="Profile" variant="outlined" size="small" />
           <Button variant="contained" sx={{ 
             ml: 2,
